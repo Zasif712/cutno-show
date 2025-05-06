@@ -40,7 +40,7 @@ export default async function DashboardPage() {
           CutNoShow Dashboard
         </h1>
 
-        {/* Today's Bookings */}
+        {/* Today&apos;s Bookings */}
         <div className="bg-white bg-opacity-90 p-6 rounded-2xl shadow-lg text-left">
           <h2 className="text-2xl font-semibold mb-4">Today's Bookings</h2>
           {bookings.length > 0 ? (
