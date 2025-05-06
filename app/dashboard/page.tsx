@@ -15,10 +15,8 @@ type Data = {
 };
 
 export default async function DashboardPage() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/bookings`,
-    { cache: "no-store" }
-  );
+  // Fetch latest bookings & waitlist from your API (relative path)
+  const res = await fetch(`/api/bookings`, { cache: 'no-store' });
   const { bookings, waitlist }: Data = await res.json();
 
   return (
@@ -44,7 +42,7 @@ export default async function DashboardPage() {
 
         {/* Today's Bookings */}
         <div className="bg-white bg-opacity-90 p-6 rounded-2xl shadow-lg text-left">
-          <h2 className="text-2xl font-semibold mb-4">Today&apos;s Bookings</h2>
+          <h2 className="text-2xl font-semibold mb-4">Today's Bookings</h2>
           {bookings.length > 0 ? (
             <table className="w-full text-gray-900">
               <thead>
