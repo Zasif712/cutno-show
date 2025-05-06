@@ -12,7 +12,7 @@ export default function Hero() {
         Automated reminders keep your chairs full—no new app, no receptionist.
       </p>
       <a
-        href="https://tally.so/r/your-form-id"
+        href="https://tally.so/r/wayYZq"
         target="_blank"
         rel="noopener noreferrer"
         className="mt-8 inline-flex items-center gap-2 rounded-full
