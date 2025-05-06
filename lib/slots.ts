@@ -1,9 +1,11 @@
 // lib/slots.ts
+
 export interface Slot {
     id: number;
     time: string;
   }
   
+  // All potential slots for today (or whatever day you choose)
   export const slots: Slot[] = [
     { id: 1, time: "09:00" },
     { id: 2, time: "10:00" },
