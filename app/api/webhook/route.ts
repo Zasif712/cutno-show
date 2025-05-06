@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import twilio from "twilio";
 import { slots } from "@/lib/slots";
-import { bookings, Booking, waitlist } from "@/lib/bookings";
+import { bookings, waitlist } from "@/lib/bookings";
 
 const client = twilio(
   process.env.TWILIO_ACCOUNT_SID!,
