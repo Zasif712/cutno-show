@@ -15,8 +15,10 @@ type Data = {
 };
 
 export default async function DashboardPage() {
-  // Fetch latest bookings & waitlist from your API (relative path)
-  const res = await fetch(`/api/bookings`, { cache: 'no-store' });
+  const res = await fetch(
+    `/api/bookings`,
+    { cache: "no-store" }
+  );
   const { bookings, waitlist }: Data = await res.json();
 
   return (
@@ -24,7 +26,7 @@ export default async function DashboardPage() {
       className="relative flex flex-col items-center justify-start text-center
                  min-h-screen py-16 bg-gradient-to-br from-indigo-600 to-purple-600 overflow-hidden"
     >
-      {/* Decorative blob (optional) */}
+      {/* Decorative blob */}
       <div className="absolute -top-20 -left-20 opacity-20 w-96 h-96">
         <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -40,9 +42,9 @@ export default async function DashboardPage() {
           CutNoShow Dashboard
         </h1>
 
-        {/* Today&apos;s Bookings */}
-        <div className="bg-white bg-opacity-90 p-6 rounded-2xl shadow-lg text-left">
-          <h2 className="text-2xl font-semibold mb-4">Today's Bookings</h2>
+        {/* eslint-disable-next-line react/no-unescaped-entities */}
+        <section className="bg-white bg-opacity-90 p-6 rounded-2xl shadow-lg text-left">
+          <h2 className="text-2xl font-semibold mb-4">Today&apos;s Bookings</h2>
           {bookings.length > 0 ? (
             <table className="w-full text-gray-900">
               <thead>
@@ -70,10 +72,10 @@ export default async function DashboardPage() {
           ) : (
             <p className="text-gray-700">No bookings yet today.</p>
           )}
-        </div>
+        </section>
 
         {/* Wait-list */}
-        <div className="bg-white bg-opacity-90 p-6 rounded-2xl shadow-lg text-left">
+        <section className="bg-white bg-opacity-90 p-6 rounded-2xl shadow-lg text-left">
           <h2 className="text-2xl font-semibold mb-4">Wait-list</h2>
           {waitlist.length > 0 ? (
             <ul className="list-disc list-inside text-gray-900">
@@ -84,13 +86,13 @@ export default async function DashboardPage() {
           ) : (
             <p className="text-gray-700">Wait-list is empty.</p>
           )}
-        </div>
+        </section>
 
         {/* Dev Controls */}
-        <div className="bg-white bg-opacity-90 p-6 rounded-2xl shadow-lg text-left">
+        <section className="bg-white bg-opacity-90 p-6 rounded-2xl shadow-lg text-left">
           <h2 className="text-2xl font-semibold mb-4">Dev Controls</h2>
           <DevControls />
-        </div>
+        </section>
       </div>
     </section>
   );
