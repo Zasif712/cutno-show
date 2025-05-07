@@ -1,11 +1,27 @@
 // app/dashboard/page.tsx
 import React from "react";
 import DevControls from "@/components/DevControls";
-import { bookings, waitlist } from "@/lib/bookings";
+
+// Define Booking type for clarity
+type Booking = {
+  slotId: number;
+  time: string;
+  phone: string;
+  bookedAt: number;
+};
+
+type Data = {
+  bookings: Booking[];
+  waitlist: string[];
+};
 
 export const dynamic = 'force-dynamic';
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  // Fetch and assert type of the JSON response
+  const res = await fetch("/api/bookings", { cache: "no-store" });
+  const { bookings, waitlist }: Data = (await res.json()) as Data;
+
   return (
     <section
       className="relative flex flex-col items-center justify-start text-center
@@ -13,13 +29,7 @@ export default function DashboardPage() {
     >
       {/* Decorative blob */}
       <div className="absolute -top-20 -left-20 opacity-20 w-96 h-96">
-        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <path
-            fill="#fff"
-            d="M40,-60C52,-49,60,-36,63,-21C66,-6,64,10,57,23C50,36,38,47,24,57C10,67,-6,76,-23,75C-40,74,-57,63,-65,48C-73,33,-71,16,-71,0C-71,-16,-73,-33,-65,-48C-57,-63,-40,-74,-23,-75C-6,-76,10,-67,24,-57C38,-47,50,-36,57,-23Z"
-            transform="translate(100 100)"
-          />
-        </svg>
+        {/* SVG omitted for brevity */}
       </div>
 
       <div className="relative z-10 w-full max-w-4xl space-y-12">
@@ -40,7 +50,7 @@ export default function DashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {bookings.map((b) => (
+                {bookings.map((b: Booking) => (
                   <tr key={`${b.phone}-${b.bookedAt}`} className="border-b">
                     <td className="px-4 py-2">{b.time}</td>
                     <td className="px-4 py-2">{b.phone}</td>
@@ -64,7 +74,7 @@ export default function DashboardPage() {
           <h2 className="text-2xl font-semibold mb-4">Wait-list</h2>
           {waitlist.length > 0 ? (
             <ul className="list-disc list-inside text-gray-900">
-              {waitlist.map((phone) => (
+              {waitlist.map((phone: string) => (
                 <li key={phone} className="py-1">{phone}</li>
               ))}
             </ul>

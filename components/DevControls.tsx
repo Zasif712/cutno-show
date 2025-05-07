@@ -1,18 +1,11 @@
 "use client";
-
 import { useRouter } from "next/navigation";
-import React from "react";
 
 export default function DevControls() {
   const router = useRouter();
-
   const handleReset = async () => {
-    try {
-      await fetch("/api/reset", { method: "POST" });
-      router.refresh();
-    } catch (error) {
-      console.error("Failed to reset bookings:", error);
-    }
+    await fetch("/api/reset", { method: "POST" });
+    router.refresh();
   };
 
   return (
