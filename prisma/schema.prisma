@@ -1,0 +1,40 @@
+// prisma/schema.prisma
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Barber {
+  id           Int       @id @default(autoincrement())
+  shopName     String
+  city         String
+  phone        String    @unique
+  startHour    Int       // Business hours start (24h format, e.g. 9 for 09:00)
+  endHour      Int       // Business hours end (24h format, e.g. 17 for 17:00)
+  slotDuration Int       // Slot length in minutes (e.g. 60)
+  bookings     Booking[]
+  waitlist     Waitlist[]
+}
+
+model Booking {
+  id          Int      @id @default(autoincrement())
+  barber      Barber   @relation(fields: [barberId], references: [id])
+  barberId    Int
+  slotId      Int      // Index of the slot in your generated slots array
+  slotTime    DateTime // Exact timestamp of the appointment
+  clientPhone String
+  createdAt   DateTime @default(now())
+}
+
+model Waitlist {
+  id          Int      @id @default(autoincrement())
+  barber      Barber   @relation(fields: [barberId], references: [id])
+  barberId    Int
+  clientPhone String
+  createdAt   DateTime @default(now())
+}

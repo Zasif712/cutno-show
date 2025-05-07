@@ -2,16 +2,28 @@
 
 export interface Slot {
     id: number;
-    time: string;
+    time: string; // format "HH:mm"
   }
   
-  // All potential slots for today (or whatever day you choose)
-  export const slots: Slot[] = [
-    { id: 1, time: "09:00" },
-    { id: 2, time: "10:00" },
-    { id: 3, time: "11:00" },
-    { id: 4, time: "13:00" },
-    { id: 5, time: "14:00" },
-    { id: 6, time: "15:00" },
-  ];
+  // Master list of all possible booking slots (static stub)
+  // Dynamic slot generation based on barber settings
+  import { barberSettings } from "@/lib/settings";
+  
+  export interface Slot {
+    id: number;
+    time: string; // "HH:mm"
+  }
+  
+  export function generateSlots(): Slot[] {
+    const { startHour, endHour, slotDuration } = barberSettings;
+    const slots: Slot[] = [];
+    let id = 1;
+    for (let minutes = startHour * 60; minutes + slotDuration <= endHour * 60; minutes += slotDuration) {
+      const h = Math.floor(minutes / 60);
+      const m = minutes % 60;
+      const time = `${h.toString().padStart(2, "0")}:\${m.toString().padStart(2, "0")}`;
+      slots.push({ id: id++, time });
+    }
+    return slots;
+  }
   

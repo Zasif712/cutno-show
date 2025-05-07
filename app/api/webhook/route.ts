@@ -1,6 +1,7 @@
+// app/api/webhook/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import twilio from "twilio";
-import { slots } from "@/lib/slots";
+import { generateSlots } from "@/lib/slots";
 import { bookings, waitlist } from "@/lib/bookings";
 
 const client = twilio(
@@ -8,74 +9,105 @@ const client = twilio(
   process.env.TWILIO_AUTH_TOKEN!
 );
 
+/**
+ * POST /api/webhook
+ * Handles WhatsApp/SMS messages for booking flow
+ */
 export async function POST(req: NextRequest) {
   const form = await req.text();
-  const p = new URLSearchParams(form);
-  const from = p.get("From")!;
-  const body = (p.get("Body") || "").trim().toLowerCase();
+  const params = new URLSearchParams(form);
+  const from = params.get("From")!;
+  const body = (params.get("Body") || "").trim().toLowerCase();
 
-  // 1️⃣ Show slots
+  // 1️⃣ Show available slots
   if (body === "book" || body.includes("slot")) {
-    const free = slots.filter(s => !bookings.find(b => b.slotId === s.id));
-    const list = free.length
-      ? free.map(s => `${s.id}. ${s.time}`).join("\n")
-      : "No slots left today.";
-    await sendReply(from, `Free slots:\n\n${list}\n\nReply with the slot number to book.`);
+    const allSlots = generateSlots();
+    const free = allSlots.filter(s => !bookings.find(b => b.slotId === s.id));
+    if (free.length) {
+      const list = free.map(s => `${s.id}. ${s.time}`).join("\n");
+      await sendReply(
+        from,
+        `Here are today’s available slots:\n\n${list}\n\nReply with the slot number to book.`
+      );
+    } else {
+      await sendReply(from, "Sorry, no slots left today. Text 'book' tomorrow 😌");
+    }
     return NextResponse.json({});
   }
 
-  // 2️⃣ New booking
+  // 2️⃣ Book a slot by number
   const choice = parseInt(body, 10);
-  const slot = slots.find(s => s.id === choice);
-  const taken = bookings.find(b => b.slotId === choice);
-  if (slot && !taken) {
-    bookings.push({ slotId: slot.id, time: slot.time, phone: from, bookedAt: Date.now() });
-    await sendReply(from, `✅ Booked for ${slot.time}! You’ll get a reminder before.`);
+  const allSlots = generateSlots();
+  const slot = allSlots.find(s => s.id === choice);
+  if (slot && !bookings.find(b => b.slotId === slot.id)) {
+    bookings.push({
+      slotId: slot.id,
+      time: slot.time,
+      phone: from,
+      bookedAt: Date.now(),
+    });
+    await sendReply(from, `✅ Booked for ${slot.time}!`);
     return NextResponse.json({});
   }
 
-  // 3️⃣ Cancellation
+  // 3️⃣ Cancel booking
   if (body === "cancel" || body.includes("cancel")) {
     const idx = bookings.findIndex(b => b.phone === from);
     if (idx > -1) {
-      const freed = bookings.splice(idx, 1)[0];                     // remove their booking
-      await sendReply(from, `Your ${freed.time} slot is now canceled.`);
-      // Offer to next in waitlist
+      const freed = bookings.splice(idx, 1)[0];
+      await sendReply(from, `Your booking at ${freed.time} has been canceled.`);
+      // Offer slot to next wait-listed client
       if (waitlist.length) {
-        const next = waitlist.shift()!;                              // get next phone
-        bookings.push({ slotId: freed.slotId, time: freed.time, phone: next, bookedAt: Date.now() });
-        await sendReply(next, `⚡️ A slot just opened at ${freed.time}—you’re booked!`);
+        const next = waitlist.shift()!;
+        bookings.push({
+          slotId: freed.slotId,
+          time: freed.time,
+          phone: next,
+          bookedAt: Date.now(),
+        });
+        await sendReply(
+          next,
+          `⚡️ A slot at ${freed.time} just opened up — you’re booked!`
+        );
       }
     } else {
-      await sendReply(from, `You don’t have an active booking to cancel.`);
+      await sendReply(from, "You don’t have an active booking to cancel.");
     }
     return NextResponse.json({});
   }
 
-  // 4️⃣ Join wait-list
+  // 4️⃣ Join waitlist
   if (body === "waitlist" || body.includes("wait list")) {
     if (!waitlist.includes(from)) {
       waitlist.push(from);
-      await sendReply(from, `You’re on the wait-list! We’ll text you if a slot frees up.`);
+      await sendReply(from, "You’re on the wait-list. We’ll notify you if a slot frees up.");
     } else {
-      await sendReply(from, `You’re already on the wait-list.`);
+      await sendReply(from, "You’re already on the wait-list.");
     }
     return NextResponse.json({});
   }
 
-  // 5️⃣ Fallback
-  await sendReply(from, `Sorry, I didn’t get that. Text 'book' to see slots, or 'cancel' to cancel.`);
+  // 5️⃣ Fallback help message
+  await sendReply(
+    from,
+    "Sorry, I didn’t understand that. Text 'book' to see slots, 'cancel', or 'waitlist'."
+  );
   return NextResponse.json({});
 }
 
+/**
+ * GET /api/webhook
+ * Health check endpoint
+ */
+export function GET() {
+  return NextResponse.json({ status: "Webhook online" });
+}
+
+// Helper to send a Twilio message
 async function sendReply(to: string, text: string) {
   await client.messages.create({
     from: process.env.TWILIO_WHATSAPP_FROM!,
     to,
     body: text,
   });
-}
-
-export function GET() {
-  return NextResponse.json({ status: "Webhook online" });
 }
