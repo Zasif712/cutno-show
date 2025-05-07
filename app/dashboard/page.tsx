@@ -1,23 +1,9 @@
 // app/dashboard/page.tsx
 import React from "react";
 import DevControls from "@/components/DevControls";
+import { bookings, waitlist } from "@/lib/bookings";
 
-type Booking = {
-  slotId: number;
-  time: string;
-  phone: string;
-  bookedAt: number;
-};
-
-type Data = {
-  bookings: Booking[];
-  waitlist: string[];
-};
-
-export default async function DashboardPage() {
-    const res = await fetch("/api/bookings", { cache: "no-store" });
-    const { bookings, waitlist }: Data = await res.json();
-
+export default function DashboardPage() {
   return (
     <section
       className="relative flex flex-col items-center justify-start text-center
@@ -39,8 +25,8 @@ export default async function DashboardPage() {
           CutNoShow Dashboard
         </h1>
 
-        {/* eslint-disable-next-line react/no-unescaped-entities */}
-        <section className="bg-white bg-opacity-90 p-6 rounded-2xl shadow-lg text-left">
+        {/* Today's Bookings */}
+        <div className="bg-white bg-opacity-90 p-6 rounded-2xl shadow-lg text-left">
           <h2 className="text-2xl font-semibold mb-4">Today&apos;s Bookings</h2>
           {bookings.length > 0 ? (
             <table className="w-full text-gray-900">
@@ -69,10 +55,10 @@ export default async function DashboardPage() {
           ) : (
             <p className="text-gray-700">No bookings yet today.</p>
           )}
-        </section>
+        </div>
 
         {/* Wait-list */}
-        <section className="bg-white bg-opacity-90 p-6 rounded-2xl shadow-lg text-left">
+        <div className="bg-white bg-opacity-90 p-6 rounded-2xl shadow-lg text-left">
           <h2 className="text-2xl font-semibold mb-4">Wait-list</h2>
           {waitlist.length > 0 ? (
             <ul className="list-disc list-inside text-gray-900">
@@ -83,13 +69,13 @@ export default async function DashboardPage() {
           ) : (
             <p className="text-gray-700">Wait-list is empty.</p>
           )}
-        </section>
+        </div>
 
         {/* Dev Controls */}
-        <section className="bg-white bg-opacity-90 p-6 rounded-2xl shadow-lg text-left">
+        <div className="bg-white bg-opacity-90 p-6 rounded-2xl shadow-lg text-left">
           <h2 className="text-2xl font-semibold mb-4">Dev Controls</h2>
           <DevControls />
-        </section>
+        </div>
       </div>
     </section>
   );
