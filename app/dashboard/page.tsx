@@ -3,6 +3,8 @@ import React from "react";
 import DevControls from "@/components/DevControls";
 import { bookings, waitlist } from "@/lib/bookings";
 
+export const dynamic = 'force-dynamic';
+
 export default function DashboardPage() {
   return (
     <section
