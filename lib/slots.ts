@@ -1,29 +1,34 @@
 // lib/slots.ts
+import { barberSettings } from "@/lib/settings";
 
 export interface Slot {
-    id: number;
-    time: string; // format "HH:mm"
+  id: number;
+  time: string; // format "HH:mm"
+}
+
+/**
+ * Generate an array of slots from startHour → endHour,
+ * each slotDuration minutes apart.
+ */
+export function generateSlots(): Slot[] {
+  const { startHour, endHour, slotDuration } = barberSettings;
+  const slots: Slot[] = [];
+  let id = 1;
+
+  // total minutes since midnight
+  for (
+    let totalMins = startHour * 60;
+    totalMins + slotDuration <= endHour * 60;
+    totalMins += slotDuration
+  ) {
+    const hrs = Math.floor(totalMins / 60);
+    const mins = totalMins % 60;
+    const time = `${hrs.toString().padStart(2, "0")}:${mins
+      .toString()
+      .padStart(2, "0")}`;
+
+    slots.push({ id: id++, time });
   }
-  
-  // Master list of all possible booking slots (static stub)
-  // Dynamic slot generation based on barber settings
-  import { barberSettings } from "@/lib/settings";
-  
-  export interface Slot {
-    id: number;
-    time: string; // "HH:mm"
-  }
-  
-  export function generateSlots(): Slot[] {
-    const { startHour, endHour, slotDuration } = barberSettings;
-    const slots: Slot[] = [];
-    let id = 1;
-    for (let minutes = startHour * 60; minutes + slotDuration <= endHour * 60; minutes += slotDuration) {
-      const h = Math.floor(minutes / 60);
-      const m = minutes % 60;
-      const time = `${h.toString().padStart(2, "0")}:\${m.toString().padStart(2, "0")}`;
-      slots.push({ id: id++, time });
-    }
-    return slots;
-  }
-  
+
+  return slots;
+}
