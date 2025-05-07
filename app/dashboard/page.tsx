@@ -15,11 +15,8 @@ type Data = {
 };
 
 export default async function DashboardPage() {
-  const res = await fetch(
-    `/api/bookings`,
-    { cache: "no-store" }
-  );
-  const { bookings, waitlist }: Data = await res.json();
+    const res = await fetch("/api/bookings", { cache: "no-store" });
+    const { bookings, waitlist }: Data = await res.json();
 
   return (
     <section
