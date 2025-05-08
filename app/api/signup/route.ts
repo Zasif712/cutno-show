@@ -3,6 +3,25 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
+  // Define expected input shape
+  type SignupInput = {
+    shopName: string;
+    city: string;
+    phone: string;
+    startHour: number;
+    endHour: number;
+    slotDuration: number;
+  };
+
+  // Parse and type the request body
+  const body = (await req.json()) as SignupInput;
+  const { shopName, city, phone, startHour, endHour, slotDuration } = body;
+
+  // Basic validation
+  if (!shopName || !city || !phone || startHour == null || endHour == null || slotDuration == null) {
+    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+  }
+
   try {
     const {
       shopName,
