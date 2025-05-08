@@ -27,8 +27,8 @@ function Features() {
       <h2 className="text-3xl text-center font-bold mb-12 text-neutral-900">How It Works</h2>
       <div className="max-w-4xl mx-auto grid gap-8 sm:grid-cols-3">
         {items.map((f) => (
-          <div key={f.title} className="p-6 bg-white border border-neutral-200 rounded-2xl shadow-lg">
-            <div className="text-4xl mb-4 text-primary">{f.icon}</div>
+          <div key={f.title} className="p-6 bg-neutral-200 rounded-2xl shadow-lg">
+            <div className="text-4xl mb-4">{f.icon}</div>
             <h3 className="text-xl font-semibold mb-2 text-neutral-900">{f.title}</h3>
             <p className="text-neutral-800">{f.desc}</p>
           </div>
@@ -49,7 +49,7 @@ function Testimonials() {
       <h2 className="text-3xl text-center font-bold mb-12 text-neutral-900">What Barbers Say</h2>
       <div className="max-w-3xl mx-auto space-y-8">
         {quotes.map((q) => (
-          <blockquote key={q.name} className="p-6 bg-white border border-neutral-200 rounded-2xl shadow-md">
+          <blockquote key={q.name} className="p-6 bg-neutral-100 rounded-2xl shadow-md">
             <p className="italic text-neutral-800">“{q.text}”</p>
             <footer className="mt-4 text-right font-semibold text-neutral-900">— {q.name}</footer>
           </blockquote>
@@ -65,7 +65,7 @@ export default function HomePage() {
       <Hero />
       <Features />
       <Testimonials />
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-neutral-100">
         <div className="text-center">
           <h2 className="text-3xl font-bold mb-4 text-neutral-900">Ready to Stop No-Shows?</h2>
           <p className="mb-6 text-lg text-neutral-800">
@@ -73,10 +73,10 @@ export default function HomePage() {
           </p>
           <Link
             href="https://tally.so/r/wayYZq"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-white font-semibold shadow hover:bg-primary-light transition"
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary-light px-8 py-4 text-white font-semibold shadow-lg hover:scale-105 transition"
           >
             Join the Free Beta
-            <span className="animate-bounce text-accent">⬇️</span>
+            <span className="animate-bounce">⬇️</span>
           </Link>
         </div>
       </section>
