@@ -1,4 +1,3 @@
-// app/signup/page.tsx
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -9,134 +8,145 @@ export default function SignupPage() {
     shopName: "",
     city: "",
     phone: "",
-    email: "",
     startHour: 9,
     endHour: 17,
     slotDuration: 60,
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value, type } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "number" ? parseInt(value) : value,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const res = await fetch("/api/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    setLoading(false);
-    if (res.ok) {
-      router.push("/signup/thank-you");
-    } else {
-      alert("Signup failed. Please try again.");
+    setError(null);
+    try {
+      const res = await fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) {
+        const { error: msg } = await res.json();
+        throw new Error(msg || "Signup failed");
+      }
+      // On success, redirect to dashboard
+      router.push("/dashboard");
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-neutral-100">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-neutral-900">Barber Signup</h1>
-        {/** Shop Name */}
-        <label className="block mb-4">
-          <span className="text-neutral-800">Shop Name</span>
+    <div className="min-h-screen flex items-center justify-center bg-neutral-100 p-4">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-md bg-white p-8 rounded-lg shadow"
+      >
+        <h1 className="text-2xl font-semibold mb-6">Barber Signup</h1>
+
+        {error && (
+          <div className="mb-4 text-red-600">Error: {error}</div>
+        )}
+
+        <label className="block mb-2">
+          <span className="text-gray-700">Shop Name</span>
           <input
-            type="text"
             name="shopName"
             value={form.shopName}
             onChange={handleChange}
             required
-            className="mt-1 block w-full border border-neutral-200 rounded p-2"
+            className="mt-1 block w-full border-neutral-200 rounded-md"
           />
         </label>
-        {/** City */}
-        <label className="block mb-4">
-          <span className="text-neutral-800">City</span>
+
+        <label className="block mb-2">
+          <span className="text-gray-700">City</span>
           <input
-            type="text"
             name="city"
             value={form.city}
             onChange={handleChange}
             required
-            className="mt-1 block w-full border border-neutral-200 rounded p-2"
+            className="mt-1 block w-full border-neutral-200 rounded-md"
           />
         </label>
-        {/** Phone */}
-        <label className="block mb-4">
-          <span className="text-neutral-800">Phone (WhatsApp/SMS)</span>
+
+        <label className="block mb-2">
+          <span className="text-gray-700">Phone (WhatsApp)</span>
           <input
-            type="tel"
             name="phone"
+            type="tel"
             value={form.phone}
             onChange={handleChange}
             required
-            className="mt-1 block w-full border border-neutral-200 rounded p-2"
+            className="mt-1 block w-full border-neutral-200 rounded-md"
           />
         </label>
-        {/** Email */}
-        <label className="block mb-4">
-          <span className="text-neutral-800">Email</span>
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full border border-neutral-200 rounded p-2"
-          />
-        </label>
-        {/** Business Hours */}
-        <div className="flex gap-4 mb-4">
-          <label className="flex-1">
-            <span className="text-neutral-800">Start Hour (24h)</span>
+
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <label className="block">
+            <span className="text-gray-700">Start Hour</span>
             <input
-              type="number"
               name="startHour"
-              value={form.startHour}
-              onChange={handleChange}
+              type="number"
               min={0}
               max={23}
-              className="mt-1 block w-full border border-neutral-200 rounded p-2"
+              value={form.startHour}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full border-neutral-200 rounded-md"
             />
           </label>
-          <label className="flex-1">
-            <span className="text-neutral-800">End Hour (24h)</span>
+
+          <label className="block">
+            <span className="text-gray-700">End Hour</span>
             <input
-              type="number"
               name="endHour"
+              type="number"
+              min={0}
+              max={23}
               value={form.endHour}
               onChange={handleChange}
-              min={1}
-              max={24}
-              className="mt-1 block w-full border border-neutral-200 rounded p-2"
+              required
+              className="mt-1 block w-full border-neutral-200 rounded-md"
             />
           </label>
         </div>
-        {/** Slot Duration */}
+
         <label className="block mb-6">
-          <span className="text-neutral-800">Slot Duration (minutes)</span>
+          <span className="text-gray-700">Slot Duration (minutes)</span>
           <input
-            type="number"
             name="slotDuration"
-            value={form.slotDuration}
-            onChange={handleChange}
+            type="number"
             min={15}
             max={180}
-            className="mt-1 block w-full border border-neutral-200 rounded p-2"
+            step={15}
+            value={form.slotDuration}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full border-neutral-200 rounded-md"
           />
         </label>
+
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-primary hover:bg-primary-light text-white font-semibold py-3 rounded-lg transition disabled:opacity-50"
+          className="w-full bg-primary hover:bg-primary-light text-white font-semibold py-2 rounded-md transition"
         >
-          {loading ? "Signing Up..." : "Create Account"}
+          {loading ? "Signing up..." : "Create Account"}
         </button>
       </form>
-    </main>
+    </div>
   );
 }
