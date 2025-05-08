@@ -47,3 +47,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+// Respond to GET to satisfy Next.js build
+export function GET() {
+  return NextResponse.json({ ok: true });
+}
