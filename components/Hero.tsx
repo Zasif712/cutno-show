@@ -8,8 +8,9 @@ export default function Hero() {
         SeatSure - Cut No Shows in Half
       </h1>
       <p className="mt-4 max-w-lg text-lg text-indigo-200">
-        Let clients book & reschedule <strong>inside WhatsApp</strong>.
-        Automated reminders keep your chairs full—no new app, no receptionist.
+        Your clients book <strong>inside WhatsApp</strong>. We send reminders. You stop chasing.
+        Automated reminders keep your chairs full.
+        No new app. No card. Just WhatsApp.
       </p>
       <a
         href="https://tally.so/r/wayYZq"
@@ -19,7 +20,7 @@ export default function Hero() {
                    bg-gradient-to-r from-purple-500 to-indigo-500 px-8 py-4
                    text-white font-semibold shadow-lg hover:scale-105 transition"
       >
-        Reserve your Spot
+        Join the Free Beta
         <span className="animate-bounce">⬇️</span>
       </a>
     </section>
