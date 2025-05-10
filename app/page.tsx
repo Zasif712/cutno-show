@@ -74,7 +74,7 @@ export default function HomePage() {
             href="https://tally.so/r/wayYZq"
             className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary-light px-8 py-4 text-white font-semibold shadow-lg hover:scale-105 transition"
           >
-            Join the Free Beta
+            Reserve your Spot
             <span className="animate-bounce">⬇️</span>
           </Link>
         </div>
