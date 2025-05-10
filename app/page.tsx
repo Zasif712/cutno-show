@@ -39,7 +39,7 @@ function Features() {
 }
 
 // Testimonials section inline component
-function Testimonials() {
+/*function Testimonials() {
   const quotes = [
     { name: "Ali's Barbers", text: "CutNoShow cut our no-shows by half in a week!" },
     { name: "FadeMasters", text: "Setup took 5 min—clients love booking via WhatsApp." },
@@ -57,14 +57,13 @@ function Testimonials() {
       </div>
     </section>
   );
-}
+}*/
 
 export default function HomePage() {
   return (
     <main className="font-sans bg-neutral-100 text-neutral-900">
       <Hero />
       <Features />
-      <Testimonials />
       <section className="py-16 bg-neutral-100">
         <div className="text-center">
           <h2 className="text-3xl font-bold mb-4 text-neutral-900">Ready to Stop No-Shows?</h2>

@@ -19,7 +19,7 @@ export default function Hero() {
                    bg-gradient-to-r from-purple-500 to-indigo-500 px-8 py-4
                    text-white font-semibold shadow-lg hover:scale-105 transition"
       >
-        Join the Free Beta
+        Reserve My Spot
         <span className="animate-bounce">⬇️</span>
       </a>
     </section>
