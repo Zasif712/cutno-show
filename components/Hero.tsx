@@ -5,7 +5,7 @@ export default function Hero() {
     <section className="relative flex flex-col items-center justify-center text-center h-screen
                        bg-gradient-to-br from-indigo-600 to-purple-600 overflow-hidden">
       <h1 className="text-5xl md:text-6xl font-extrabold text-white">
-        Cut No-Shows in Half
+        SeatSure - Cut No Shows in Half
       </h1>
       <p className="mt-4 max-w-lg text-lg text-indigo-200">
         Let clients book & reschedule <strong>inside WhatsApp</strong>.
